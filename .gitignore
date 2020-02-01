@@ -2,3 +2,7 @@
 /Source/MicroCloud.API/packages
 /Source/MicroCloud.API/MicroCloud.API.ClientSide/obj/Debug
 /Source/MicroCloud.API/MicroCloud.API.CloudSide/obj/Debug
+/Source/MicroCloud.API/MicroCloud.API.ClientSide/bin/MicroCloud.API.ClientSide.dll
+/Source/MicroCloud.API/MicroCloud.API.CloudSide/bin/MicroCloud.API.CloudSide.dll
+*.pdb
+
