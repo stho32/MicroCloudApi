@@ -8,3 +8,6 @@
 *.user
 /Source/MicroCloud.API/MicroCloud.API.ClientSide/obj/Release
 /Source/MicroCloud.API/MicroCloud.API.CloudSide/obj/Release
+/Source/MicroCloud.API/MicroCloud.API.BL/bin/Debug
+/Source/MicroCloud.API/MicroCloud.API.BL/obj/Debug
+/Source/MicroCloud.API/MicroCloud.API.CloudSide/bin/MicroCloud.API.BL.dll

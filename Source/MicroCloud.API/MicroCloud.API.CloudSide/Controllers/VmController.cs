@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MicroCloud.API.BL.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,6 +12,8 @@ namespace MicroCloud.API.CloudSide.Controllers
     /// </summary>
     public class VmController : Controller
     {
+        protected RepositoryFactory repositoryFactory = new RepositoryFactory();
+
         /// <summary>
         /// VMs are calling this method regulary to tell the cloud their cloud-internal IP address.
         /// We need that for a lot of stuff.
@@ -19,7 +22,19 @@ namespace MicroCloud.API.CloudSide.Controllers
         /// <returns></returns>
         public JsonResult IAm(string name)
         {
-            return Json(new { });
+            var vmRepository = repositoryFactory.VmRepository();
+            var vm = vmRepository.GetByName(name);
+            if ( vm != null )
+            {
+                if ( vm.CloudInternalIP != Request.UserHostAddress)
+                {
+                    vmRepository.SetCloudInternalIP(vm.Id, Request.UserHostAddress);
+                }
+
+                return Json(new { result = "OK" });
+            }
+
+            return Json(new { result = "VM not found" });
         }
 
         /// <summary>
