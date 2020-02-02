@@ -1,4 +1,7 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
 using Dapper;
 using MicroCloud.API.BL.Entities;
 using MicroCloud.API.BL.Interfaces;
@@ -16,20 +19,16 @@ namespace MicroCloud.API.BL.Repositories
 
         public IVm GetByName(string name)
         {
-            try
+            using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
             {
-                using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+                List<Vm> vm = sqlConnection.Query<Vm>("SELECT * FROM VirtualMachine WHERE Name=@name", new
                 {
-                    var vm = sqlConnection.QuerySingle<Vm>("SELECT * FROM VirtualMachine WHERE Name=@name", new
-                    {
-                        name = name
-                    });
+                    name = name
+                }).ToList();
 
-                    return vm;
-                }
-            } 
-            catch
-            {
+                if (vm.Count > 0)
+                    return vm[0];
+
                 return null;
             }
         }

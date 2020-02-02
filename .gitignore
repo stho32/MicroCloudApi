@@ -11,3 +11,5 @@
 /Source/MicroCloud.API/MicroCloud.API.BL/bin/Debug
 /Source/MicroCloud.API/MicroCloud.API.BL/obj/Debug
 /Source/MicroCloud.API/MicroCloud.API.CloudSide/bin/MicroCloud.API.BL.dll
+/Source/MicroCloud.API/MicroCloud.API.BL/bin/Release
+/Source/MicroCloud.API/MicroCloud.API.BL/obj/Release

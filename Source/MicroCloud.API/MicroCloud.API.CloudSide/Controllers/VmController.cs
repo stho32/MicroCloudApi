@@ -1,4 +1,5 @@
-﻿using MicroCloud.API.CloudSide.App_Code;
+﻿using System;
+using MicroCloud.API.CloudSide.App_Code;
 using System.Web.Mvc;
 using MicroCloud.API.BL.Repositories;
 
@@ -20,19 +21,26 @@ namespace MicroCloud.API.CloudSide.Controllers
         /// <returns></returns>
         public JsonResult IAm(string name)
         {
-            var vmRepository = repositoryFactory.VmRepository();
-            var vm = vmRepository.GetByName(name);
-            if ( vm != null )
+            try
             {
-                if ( vm.CloudInternalIP != Request.UserHostAddress)
+                var vmRepository = repositoryFactory.VmRepository();
+                var vm = vmRepository.GetByName(name);
+                if (vm != null)
                 {
-                    vmRepository.SetCloudInternalIP(vm.Id, Request.UserHostAddress);
+                    if (vm.CloudInternalIP != Request.UserHostAddress)
+                    {
+                        vmRepository.SetCloudInternalIP(vm.Id, Request.UserHostAddress);
+                    }
+
+                    return Json(new {result = "OK"}, JsonRequestBehavior.AllowGet);
                 }
 
-                return Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
+                return Json(new {result = "VM not found"}, JsonRequestBehavior.AllowGet);
             }
-
-            return Json(new { result = "VM not found" }, JsonRequestBehavior.AllowGet);
+            catch (Exception e)
+            {
+                return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         /// <summary>
