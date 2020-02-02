@@ -44,9 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\IConfigurationProvider.cs" />
-    <Compile Include="Classes\RepositoryFactory.cs" />
-    <Compile Include="Classes\VmRepository.cs" />
+    <Compile Include="Interfaces\IConfigurationProvider.cs" />
+    <Compile Include="Repositories\RepositoryFactory.cs" />
+    <Compile Include="Repositories\VmRepository.cs" />
     <Compile Include="Entities\Vm.cs" />
     <Compile Include="Interfaces\IVm.cs" />
     <Compile Include="Interfaces\IVmRepository.cs" />

@@ -1,4 +1,4 @@
-﻿namespace MicroCloud.API.BL.Classes
+﻿namespace MicroCloud.API.BL.Interfaces
 {
     public interface IConfigurationProvider
     {

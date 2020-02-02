@@ -1,9 +1,6 @@
-﻿using MicroCloud.API.BL.Classes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using MicroCloud.API.CloudSide.App_Code;
 using System.Web.Mvc;
+using MicroCloud.API.BL.Repositories;
 
 namespace MicroCloud.API.CloudSide.Controllers
 {
@@ -32,10 +29,10 @@ namespace MicroCloud.API.CloudSide.Controllers
                     vmRepository.SetCloudInternalIP(vm.Id, Request.UserHostAddress);
                 }
 
-                return Json(new { result = "OK" });
+                return Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
             }
 
-            return Json(new { result = "VM not found" });
+            return Json(new { result = "VM not found" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

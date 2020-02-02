@@ -1,6 +1,6 @@
 ﻿using MicroCloud.API.BL.Interfaces;
 
-namespace MicroCloud.API.BL.Classes
+namespace MicroCloud.API.BL.Repositories
 {
     public class RepositoryFactory
     {

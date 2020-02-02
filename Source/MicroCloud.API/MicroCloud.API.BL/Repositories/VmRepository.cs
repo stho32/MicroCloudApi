@@ -1,30 +1,24 @@
-﻿using Dapper;
+﻿using System.Data.SqlClient;
+using Dapper;
 using MicroCloud.API.BL.Entities;
 using MicroCloud.API.BL.Interfaces;
-using System;
-using System.Data.SqlClient;
 
-namespace MicroCloud.API.BL.Classes
+namespace MicroCloud.API.BL.Repositories
 {
-    public class ConfigurationProvider : IConfigurationProvider
-    {
-        public string ConnectionString => throw new NotImplementedException();
-    }
-
     public class VmRepository : IVmRepository
     {
-        private readonly IConfigurationProvider configurationProvider;
+        private readonly IConfigurationProvider _configurationProvider;
 
         public VmRepository(IConfigurationProvider configurationProvider)
         {
-            this.configurationProvider = configurationProvider;
+            this._configurationProvider = configurationProvider;
         }
 
         public IVm GetByName(string name)
         {
             try
             {
-                using (var sqlConnection = new SqlConnection(configurationProvider.ConnectionString))
+                using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
                 {
                     var vm = sqlConnection.QuerySingle<Vm>("SELECT * FROM VirtualMachine WHERE Name=@name", new
                     {
@@ -42,7 +36,7 @@ namespace MicroCloud.API.BL.Classes
 
         public void SetCloudInternalIP(int id, string userHostAddress)
         {
-            using (var sqlConnection = new SqlConnection(configurationProvider.ConnectionString))
+            using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
             {
                 sqlConnection.Execute("UPDATE dbo.VirtualMachine SET CloudInternalIP=@cloudInternalIP WHERE Id=@id", new
                 {
