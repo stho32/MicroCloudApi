@@ -12,7 +12,8 @@ namespace MicroCloud.API.CloudSide.Controllers
     /// </summary>
     public class VmController : Controller
     {
-        protected RepositoryFactory repositoryFactory = new RepositoryFactory();
+        protected RepositoryFactory repositoryFactory = new RepositoryFactory(
+            new ConfigurationProvider());
 
         /// <summary>
         /// VMs are calling this method regulary to tell the cloud their cloud-internal IP address.
