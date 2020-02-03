@@ -121,10 +121,12 @@ GO
 
 CREATE TABLE VirtualMachinePortForwarding (
 	Id INT NOT NULL PRIMARY KEY IDENTITY,
+	VirtualMachineId INT NOT NULL REFERENCES VirtualMachine(Id),
 	Comment VARCHAR(200) NOT NULL DEFAULT '',
 	LocalPort INT NOT NULL DEFAULT 0,
 	PortOnEntranceRouter INT NOT NULL DEFAULT 0,
-	IsEnabled BIT NOT NULL DEFAULT 0 -- Has it been processed and set on the router? (The background process does that)
+	IsEnabled BIT NOT NULL DEFAULT 0, -- Has it been processed and set on the router? (The background process does that)
+	RemoveThis BIT NOT NULL DEFAULT 0 -- Is it to be removed?
 )
 
 GO
