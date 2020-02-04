@@ -28,13 +28,15 @@ namespace MicroCloud.API.CloudSide.Controllers
                 var vm = vmRepository.GetByName(name);
                 if (vm != null)
                 {
-                    var portForwarding = portForwardingRepository.GetByPort(myPort);
+                    var portForwarding = portForwardingRepository.GetByPort(vm.Id, myPort);
                     if (portForwarding == null)
                     {
                         portForwardingRepository.Add(vm.Id, myPort);
                     }
                     return Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
                 }
+
+                return Json(new { result = "VM not found" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -42,5 +44,33 @@ namespace MicroCloud.API.CloudSide.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Vms can remove port forwardings
+        /// </summary>
+        /// <param name="name">The name of the virtual machine which acts as an access key</param>
+        /// <param name="myPort">the port of the virtual machine which should be forwarded</param>
+        /// <returns></returns>
+        public JsonResult Remove(string name, int myPort)
+        {
+            try
+            {
+                var vmRepository = repositoryFactory.VmRepository();
+                var portForwardingRepository = repositoryFactory.PortForwardingRepository();
+
+                var vm = vmRepository.GetByName(name);
+                if (vm != null)
+                {
+                    portForwardingRepository.Remove(vm.Id, myPort);
+                    return Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { result = "VM not found" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

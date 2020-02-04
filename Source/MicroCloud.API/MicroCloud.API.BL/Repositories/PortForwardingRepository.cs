@@ -25,7 +25,7 @@ namespace MicroCloud.API.BL.Repositories
                         SELECT * 
                           FROM VirtualMachinePortForwarding 
                          WHERE VirtualMachineId = @virtualMachineId
-                           AND Port = @port", 
+                           AND LocalPort = @port", 
                         new
                             {
                                 virtualMachineId,
@@ -50,6 +50,22 @@ namespace MicroCloud.API.BL.Repositories
                         (@virtualMachineId, @localPort)
                     ", new
                 {
+                    virtualMachineId,
+                    localPort
+                });
+            }
+        }
+
+        public void Remove(int virtualMachineId, int localPort)
+        {
+            using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+            {
+                sqlConnection.Execute(@"
+                    UPDATE VirtualMachinePortForwarding 
+                       SET RemoveThis = 1
+                     WHERE VirtualMachineId = @virtualMachineId
+                       AND LocalPort = @localPort
+                    ", new {
                     virtualMachineId,
                     localPort
                 });
