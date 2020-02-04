@@ -44,7 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\PortForwarding.cs" />
     <Compile Include="Interfaces\IConfigurationProvider.cs" />
+    <Compile Include="Interfaces\IPortForwarding.cs" />
+    <Compile Include="Interfaces\IPortForwardingRepository.cs" />
+    <Compile Include="Repositories\PortForwardingRepository.cs" />
     <Compile Include="Repositories\RepositoryFactory.cs" />
     <Compile Include="Repositories\VmRepository.cs" />
     <Compile Include="Entities\Vm.cs" />
