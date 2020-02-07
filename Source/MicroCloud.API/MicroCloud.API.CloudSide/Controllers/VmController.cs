@@ -10,7 +10,7 @@ namespace MicroCloud.API.CloudSide.Controllers
     /// </summary>
     public class VmController : Controller
     {
-        protected RepositoryFactory repositoryFactory = new RepositoryFactory(
+        protected RepositoryFactory RepositoryFactory = new RepositoryFactory(
             new ConfigurationProvider());
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace MicroCloud.API.CloudSide.Controllers
         {
             try
             {
-                var vmRepository = repositoryFactory.VmRepository();
+                var vmRepository = RepositoryFactory.VmRepository();
                 var vm = vmRepository.GetByName(name);
                 if (vm != null)
                 {

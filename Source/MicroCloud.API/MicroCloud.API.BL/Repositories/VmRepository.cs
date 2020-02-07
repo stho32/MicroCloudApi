@@ -43,5 +43,17 @@ namespace MicroCloud.API.BL.Repositories
                 });
             }
         }
+
+        public IEnumerable<IVm> GetByApiKey(int apiKeyId)
+        {
+            using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+            {
+                IEnumerable<Vm> vm = 
+                    sqlConnection.Query<Vm>("SELECT * FROM VirtualMachine WHERE ApiKeyId=@id", 
+                        new { id = apiKeyId });
+
+                return vm;
+            }
+        }
     }
 }

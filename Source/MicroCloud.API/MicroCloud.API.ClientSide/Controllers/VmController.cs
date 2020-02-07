@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MicroCloud.API.BL.Repositories;
 
 namespace MicroCloud.API.ClientSide.Controllers
 {
@@ -12,13 +13,28 @@ namespace MicroCloud.API.ClientSide.Controllers
     /// </summary>
     public class VmController : Controller
     {
+        protected RepositoryFactory repositoryFactory = new RepositoryFactory(new ConfigurationProvider());
+
         /// <summary>
         /// List all VMs with their current state and stuff (cloud internal ip ...)
         /// </summary>
         /// <returns></returns>
-        public JsonResult List(string apiKey)
+        public JsonResult Index(string apiKey)
         {
-            return Json(new { });
+            try
+            {
+                var apiKeyRepository = repositoryFactory.ApiKeyRepository();
+                var apiKeyId = apiKeyRepository.GetApiKeyIdByCode(apiKey);
+
+                var vmRepository = repositoryFactory.VmRepository();
+                var vms = vmRepository.GetByApiKey(apiKeyId);
+
+                return Json(vms, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         /// <summary>
@@ -34,7 +50,7 @@ namespace MicroCloud.API.ClientSide.Controllers
         /// Grab the state of a vm
         /// </summary>
         /// <returns></returns>
-        public JsonResult Index(string apiKey, string vmname)
+        public JsonResult ByName(string apiKey, string vmname)
         {
             return Json(new { });
         }
