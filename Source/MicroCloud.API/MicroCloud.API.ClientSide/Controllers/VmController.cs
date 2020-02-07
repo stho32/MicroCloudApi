@@ -67,8 +67,11 @@ namespace MicroCloud.API.ClientSide.Controllers
         /// Grab the state of a vm
         /// </summary>
         /// <returns></returns>
-        public JsonResult ByName(string apiKey, string vmname)
+        public JsonResult ByName(string apiKey, string name)
         {
+            if ( name == null )
+                return Json(new { result = "Not found" }, JsonRequestBehavior.AllowGet);
+
             try
             {
                 var apiKeyRepository = repositoryFactory.ApiKeyRepository();
@@ -77,7 +80,7 @@ namespace MicroCloud.API.ClientSide.Controllers
                 var vmRepository = repositoryFactory.VmRepository();
                 var vms = vmRepository.GetByApiKey(apiKeyId);
 
-                var vm = vms.FirstOrDefault(x => x.Name.ToLower() == vmname.ToLower());
+                var vm = vms.FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
 
                 if (vm == null)
                     return Json(new {result = "Not found"}, JsonRequestBehavior.AllowGet);
@@ -97,7 +100,24 @@ namespace MicroCloud.API.ClientSide.Controllers
         /// <returns></returns>
         public JsonResult RemoveVm(string apiKey, string vmname)
         {
-            return Json(new { });
+            try
+            {
+                var apiKeyRepository = repositoryFactory.ApiKeyRepository();
+                var apiKeyId = apiKeyRepository.GetApiKeyIdByCode(apiKey);
+                if (apiKeyId <= 0)
+                {
+                    return Json(new { result = "Not a valid api key." }, JsonRequestBehavior.AllowGet);
+                }
+
+                var vmRepository = repositoryFactory.VmRepository();
+                vmRepository.RemoveVm(apiKeyId, vmname);
+
+                return Json(new {result = "OK"}, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

@@ -72,5 +72,17 @@ namespace MicroCloud.API.BL.Repositories
                 return null;
             }
         }
+
+        public void RemoveVm(int apiKeyId, string vmname)
+        {
+            using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+            {
+                sqlConnection.Execute("UPDATE dbo.VirtualMachine SET RemoveThisVm=1 WHERE ApiKeyId=@id AND name=@vmname", new
+                {
+                    id = apiKeyId,
+                    vmname
+                });
+            }
+        }
     }
 }

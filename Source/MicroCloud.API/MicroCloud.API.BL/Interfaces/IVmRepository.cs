@@ -10,5 +10,6 @@ namespace MicroCloud.API.BL.Interfaces
 
         IEnumerable<IVm> GetByApiKey(int apiKeyId);
         IVm CreateForApiKey(int apiKeyId, string baseImage, string parametersJson);
+        void RemoveVm(int apiKeyId, string vmname);
     }
 }
