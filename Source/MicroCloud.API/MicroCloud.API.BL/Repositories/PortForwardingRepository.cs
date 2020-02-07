@@ -71,5 +71,23 @@ namespace MicroCloud.API.BL.Repositories
                 });
             }
         }
+
+        public IEnumerable<IPortForwarding> GetByVm(int vmId)
+        {
+            using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+            {
+                List<PortForwarding> portForwardings =
+                    sqlConnection.Query<PortForwarding>(@"
+                        SELECT * 
+                          FROM VirtualMachinePortForwarding 
+                         WHERE VirtualMachineId = @virtualMachineId",
+                        new
+                        {
+                            virtualMachineId = vmId
+                        }).ToList();
+
+                return portForwardings;
+            }
+        }
     }
 }

@@ -16,13 +16,14 @@ namespace MicroCloud.API.BL.Repositories
             this._configurationProvider = configurationProvider;
         }
 
-        public IVm GetByName(string name)
+        public IVm GetByName(string name, int apiKeyId = -1)
         {
             using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
             {
-                List<Vm> vm = sqlConnection.Query<Vm>("SELECT * FROM VirtualMachine WHERE Name=@name", new
+                List<Vm> vm = sqlConnection.Query<Vm>("SELECT * FROM VirtualMachine WHERE Name=@name AND (ApiKeyId=@apiKeyId OR @apiKeyId=-1)", new
                 {
-                    name = name
+                    name = name,
+                    apiKeyId
                 }).ToList();
 
                 if (vm.Count > 0)

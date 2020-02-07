@@ -5,7 +5,7 @@ namespace MicroCloud.API.BL.Interfaces
 {
     public interface IVmRepository
     {
-        IVm GetByName(string name);
+        IVm GetByName(string name, int apiKeyId = -1);
         void SetCloudInternalIP(int id, string userHostAddress);
 
         IEnumerable<IVm> GetByApiKey(int apiKeyId);
