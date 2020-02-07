@@ -352,5 +352,43 @@ GO
 -- Reference to creator / owner, but without referential integrity
 ALTER TABLE VirtualMachine
   ADD ApiKeyId INT NOT NULL DEFAULT -1 
+GO
 
+/* ------------------------------------------------------------------------------------------
 
+	Create a virtual machine using api key (client side api)
+
+*/	
+IF (EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_NAME LIKE 'AddMicroVMClientSide'))
+BEGIN
+	DROP PROCEDURE AddMicroVMClientSide;
+END
+GO
+
+CREATE PROCEDURE AddMicroVMClientSide (@BaseImage VARCHAR(200), @ApiKeyId INT)
+    AS
+BEGIN
+	/* Creates a virtual machine */
+	DECLARE @Node INT
+	DECLARE @Name VARCHAR(200)
+	DECLARE @NewId INT
+	
+	/* Get the node with most RAM available */
+	SELECT TOP 1 @Node = Id
+	  FROM MICRONodeStats
+	 WHERE RamTotalGB > 4
+	 ORDER BY RamTotalGB DESC
+
+	/* Grab a new name */
+	SELECT @Name = (SELECT Value FROM Configuration WHERE Name = 'VMNamesStartWith') + CAST(NEWID () AS VARCHAR(100))
+	
+	INSERT INTO VirtualMachine (Name, BaseImage, CreatedOnNode, ActivateThisVm, ApiKeyId)
+	SELECT @Name, @BaseImage, @Node, 1, @ApiKeyId
+
+	SELECT @NewId = SCOPE_IDENTITY()
+
+	SELECT Id, Name, BaseImage, CreatedOnNode, Alias, Status, RAMinGB, CloudInternalIP
+	  FROM VirtualMachine
+	 WHERE Id = @NewID
+END
+GO
