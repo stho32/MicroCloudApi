@@ -6,7 +6,7 @@
 
 	For every node in our system we have an entry in this table. 
 
-*/	
+*/
  
 IF (EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'VirtualMachine'))
 BEGIN
@@ -121,7 +121,7 @@ GO
 
 CREATE TABLE VirtualMachinePortForwarding (
 	Id INT NOT NULL PRIMARY KEY IDENTITY,
-	VirtualMachineId INT NOT NULL REFERENCES VirtualMachine(Id),
+	VirtualMachineId INT NOT NULL, -- this is explicit: no referencial integrity ! we need freedom here to separate the worker for the vms from the port worker
 	Comment VARCHAR(200) NOT NULL DEFAULT '',
 	LocalPort INT NOT NULL DEFAULT 0,
 	PortOnEntranceRouter INT NOT NULL DEFAULT 0,
@@ -278,3 +278,79 @@ BEGIN
 	   SET IsActivated = 1
 	 WHERE Name = @Name
 END
+
+/* ------------------------------------------------------------------------------------------
+
+	View to select all port forwardings that are waiting for their creation
+
+*/	
+IF (EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'PortForwardingsWaitingForCreation'))
+BEGIN
+	DROP VIEW PortForwardingsWaitingForCreation;
+END
+GO
+
+CREATE VIEW PortForwardingsWaitingForCreation
+    AS
+	/*
+		These port forwardings are waiting to be enabled on the 
+		router. (Port and NAT)
+		The moment we have a cloud internal ip the thing can be done...
+	*/
+	SELECT pf.Id, VirtualMachineId, LocalPort, PortOnEntranceRouter, 
+		   vm.Name AS VMName, CloudInternalIP 
+	  FROM VirtualMachinePortForwarding pf
+	  JOIN VirtualMachine vm ON pf.VirtualMachineId = vm.Id
+	 WHERE IsEnabled  = 0
+	   AND RemoveThis = 0
+	   AND CloudInternalIP <> ''
+GO
+
+/* ------------------------------------------------------------------------------------------
+
+	View to select all port forwardings that are not needed anymore
+
+*/	
+IF (EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'PortForwardingsWaitingForRemoval'))
+BEGIN
+	DROP VIEW PortForwardingsWaitingForRemoval;
+END
+GO
+
+CREATE VIEW PortForwardingsWaitingForRemoval
+    AS
+	/*
+		These port forwardings need to go away.
+	*/
+	SELECT pf.Id, VirtualMachineId, LocalPort, PortOnEntranceRouter, 
+		   vm.Name AS VMName, CloudInternalIP 
+	  FROM VirtualMachinePortForwarding pf
+	  LEFT JOIN VirtualMachine vm ON pf.VirtualMachineId = vm.Id
+	 WHERE RemoveThis = 1 OR vm.Id IS NULL
+GO
+
+/* ------------------------------------------------------------------------------------------
+
+	Api keys are needed to authenticate users
+
+*/	
+
+IF (EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'ApiKey'))
+BEGIN
+	DROP TABLE ApiKey;
+END
+GO
+
+CREATE TABLE ApiKey (
+	Id INT NOT NULL PRIMARY KEY IDENTITY,
+	Code VARCHAR(200) NOT NULL DEFAULT '',
+	Comment VARCHAR(200) NOT NULL DEFAULT '',
+	IsActive BIT NOT NULL DEFAULT 0
+)
+GO
+
+-- Reference to creator / owner, but without referential integrity
+ALTER TABLE VirtualMachine
+  ADD ApiKeyId INT NOT NULL DEFAULT -1 
+
+
