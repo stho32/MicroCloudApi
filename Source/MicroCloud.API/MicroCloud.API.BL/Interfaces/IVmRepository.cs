@@ -9,5 +9,6 @@ namespace MicroCloud.API.BL.Interfaces
         void SetCloudInternalIP(int id, string userHostAddress);
 
         IEnumerable<IVm> GetByApiKey(int apiKeyId);
+        IVm CreateForApiKey(int apiKeyId, string baseImage, string parametersJson);
     }
 }

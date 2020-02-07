@@ -43,7 +43,24 @@ namespace MicroCloud.API.ClientSide.Controllers
         /// <returns></returns>
         public JsonResult New(string apiKey, string baseImage, string parametersJson)
         {
-            return Json(new { });
+            try
+            {
+                var apiKeyRepository = repositoryFactory.ApiKeyRepository();
+                var apiKeyId = apiKeyRepository.GetApiKeyIdByCode(apiKey);
+                if (apiKeyId <= 0)
+                {
+                    return Json(new { result = "Not a valid api key." }, JsonRequestBehavior.AllowGet);
+                }
+
+                var vmRepository = repositoryFactory.VmRepository();
+                var vm = vmRepository.CreateForApiKey(apiKeyId, baseImage, parametersJson);
+
+                return Json(vm, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         /// <summary>

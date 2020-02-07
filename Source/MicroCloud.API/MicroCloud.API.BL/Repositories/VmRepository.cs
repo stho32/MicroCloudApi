@@ -55,5 +55,22 @@ namespace MicroCloud.API.BL.Repositories
                 return vm;
             }
         }
+
+        public IVm CreateForApiKey(int apiKeyId, string baseImage, string parametersJson)
+        {
+            using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+            {
+                List<Vm> vm = sqlConnection.Query<Vm>("EXEC AddMicroVMClientSide @BaseImage, @ApiKeyId", new
+                {
+                    BaseImage = baseImage,
+                    ApiKeyId = apiKeyId
+                }).ToList();
+
+                if (vm.Count > 0)
+                    return vm[0];
+
+                return null;
+            }
+        }
     }
 }
