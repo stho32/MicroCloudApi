@@ -9,7 +9,7 @@ namespace MicroCloud.API.BL.Interfaces
         void SetCloudInternalIP(int id, string userHostAddress);
 
         IEnumerable<IVm> GetByApiKey(int apiKeyId);
-        IVm CreateForApiKey(int apiKeyId, string baseImage, string parametersJson);
+        IVm CreateForApiKey(int apiKeyId, string baseImage, int ramInGb, string parametersJson);
         void RemoveVm(int apiKeyId, string vmname);
     }
 }

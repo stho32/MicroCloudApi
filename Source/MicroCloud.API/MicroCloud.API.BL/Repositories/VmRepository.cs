@@ -57,13 +57,14 @@ namespace MicroCloud.API.BL.Repositories
             }
         }
 
-        public IVm CreateForApiKey(int apiKeyId, string baseImage, string parametersJson)
+        public IVm CreateForApiKey(int apiKeyId, string baseImage, int ramInGb, string parametersJson)
         {
             using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
             {
-                List<Vm> vm = sqlConnection.Query<Vm>("EXEC AddMicroVMClientSide @BaseImage, @ApiKeyId", new
+                List<Vm> vm = sqlConnection.Query<Vm>("EXEC AddMicroVMClientSide @BaseImage, @RamInGb, @ApiKeyId", new
                 {
                     BaseImage = baseImage,
+                    RamInGb = ramInGb,
                     ApiKeyId = apiKeyId
                 }).ToList();
 

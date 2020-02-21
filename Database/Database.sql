@@ -365,7 +365,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE AddMicroVMClientSide (@BaseImage VARCHAR(200), @ApiKeyId INT)
+CREATE PROCEDURE AddMicroVMClientSide (@BaseImage VARCHAR(200), @RamInGb INT, @ApiKeyId INT)
     AS
 BEGIN
 	/* Creates a virtual machine */
@@ -376,14 +376,14 @@ BEGIN
 	/* Get the node with most RAM available */
 	SELECT TOP 1 @Node = Id
 	  FROM MICRONodeStats
-	 WHERE RamTotalGB > 4
+	 WHERE RamTotalGB > @RamInGb
 	 ORDER BY RamTotalGB DESC
 
 	/* Grab a new name */
 	SELECT @Name = (SELECT Value FROM Configuration WHERE Name = 'VMNamesStartWith') + CAST(NEWID () AS VARCHAR(100))
 	
-	INSERT INTO VirtualMachine (Name, BaseImage, CreatedOnNode, ActivateThisVm, ApiKeyId)
-	SELECT @Name, @BaseImage, @Node, 1, @ApiKeyId
+	INSERT INTO VirtualMachine (Name, BaseImage, CreatedOnNode, ActivateThisVm, ApiKeyId, RAMinGB)
+	SELECT @Name, @BaseImage, @Node, 1, @ApiKeyId, @RamInGb
 
 	SELECT @NewId = SCOPE_IDENTITY()
 
@@ -392,3 +392,4 @@ BEGIN
 	 WHERE Id = @NewID
 END
 GO
+

@@ -41,7 +41,7 @@ namespace MicroCloud.API.ClientSide.Controllers
         /// Create a new VM
         /// </summary>
         /// <returns></returns>
-        public JsonResult New(string apiKey, string baseImage, string parametersJson)
+        public JsonResult New(string apiKey, string baseImage, int? ramInGb, string parametersJson)
         {
             try
             {
@@ -52,8 +52,13 @@ namespace MicroCloud.API.ClientSide.Controllers
                     return Json(new { result = "Not a valid api key." }, JsonRequestBehavior.AllowGet);
                 }
 
+                if ( !ramInGb.HasValue)
+                {
+                    ramInGb = 4;
+                }
+
                 var vmRepository = repositoryFactory.VmRepository();
-                var vm = vmRepository.CreateForApiKey(apiKeyId, baseImage, parametersJson);
+                var vm = vmRepository.CreateForApiKey(apiKeyId, baseImage, ramInGb.Value, parametersJson);
 
                 return Json(vm, JsonRequestBehavior.AllowGet);
             }
