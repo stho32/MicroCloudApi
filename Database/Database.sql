@@ -226,7 +226,8 @@ CREATE VIEW VirtualMachinesThatWaitForActivation
 	*/
 	SELECT vm.Name AS VMName, 
 		   n.Name AS Node,
-		   BaseImage
+		   BaseImage,
+		   RamInGB
 	  FROM VirtualMachine vm
 	  JOIN Node n ON vm.CreatedOnNode = n.Id
 	 WHERE ActivateThisVm = 1
@@ -376,7 +377,7 @@ BEGIN
 	/* Get the node with most RAM available */
 	SELECT TOP 1 @Node = Id
 	  FROM MICRONodeStats
-	 WHERE RamTotalGB > @RamInGb
+	 WHERE RamTotalGB >= @RamInGb
 	 ORDER BY RamTotalGB DESC
 
 	/* Grab a new name */
@@ -392,4 +393,3 @@ BEGIN
 	 WHERE Id = @NewID
 END
 GO
-
