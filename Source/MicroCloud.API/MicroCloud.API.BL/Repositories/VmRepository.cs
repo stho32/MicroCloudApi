@@ -22,7 +22,7 @@ namespace MicroCloud.API.BL.Repositories
             {
                 List<Vm> vm = sqlConnection.Query<Vm>("SELECT * FROM VirtualMachine WHERE Name=@name AND (ApiKeyId=@apiKeyId OR @apiKeyId=-1)", new
                 {
-                    name = name,
+                    name,
                     apiKeyId
                 }).ToList();
 
@@ -39,7 +39,7 @@ namespace MicroCloud.API.BL.Repositories
             {
                 sqlConnection.Execute("UPDATE dbo.VirtualMachine SET CloudInternalIP=@cloudInternalIP WHERE Id=@id", new
                 {
-                    id = id,
+                    id,
                     cloudInternalIp = userHostAddress
                 });
             }
