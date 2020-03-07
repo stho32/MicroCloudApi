@@ -103,5 +103,37 @@ namespace MicroCloud.API.BL.Repositories
                 }
             }
         }
+
+        public void StopVm(int apiKeyId, string vmname)
+        {
+            var vm = GetByName(vmname, apiKeyId);
+
+            if (vm != null)
+            {
+                using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+                {
+                    sqlConnection.Execute("UPDATE dbo.VirtualMachine SET StopThisVm = 1 WHERE Id=@Id", new
+                    {
+                        id = vm.Id
+                    });
+                }
+            }
+        }
+
+        public void StartVm(int apiKeyId, string vmname)
+        {
+            var vm = GetByName(vmname, apiKeyId);
+
+            if (vm != null)
+            {
+                using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+                {
+                    sqlConnection.Execute("UPDATE dbo.VirtualMachine SET StartThisVm = 1 WHERE Id=@Id", new
+                    {
+                        id = vm.Id
+                    });
+                }
+            }
+        }
     }
 }

@@ -147,5 +147,49 @@ namespace MicroCloud.API.ClientSide.Controllers
             }
         }
 
+        public JsonResult Stop(string apiKey, string vmname)
+        {
+            try
+            {
+                var apiKeyRepository = repositoryFactory.ApiKeyRepository();
+                var apiKeyId = apiKeyRepository.GetApiKeyIdByCode(apiKey);
+                if (apiKeyId <= 0)
+                {
+                    return Json(new { result = "Not a valid api key." }, JsonRequestBehavior.AllowGet);
+                }
+
+                var vmRepository = repositoryFactory.VmRepository();
+                vmRepository.StopVm(apiKeyId, vmname);
+
+                return Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult Start(string apiKey, string vmname)
+        {
+            try
+            {
+                var apiKeyRepository = repositoryFactory.ApiKeyRepository();
+                var apiKeyId = apiKeyRepository.GetApiKeyIdByCode(apiKey);
+                if (apiKeyId <= 0)
+                {
+                    return Json(new { result = "Not a valid api key." }, JsonRequestBehavior.AllowGet);
+                }
+
+                var vmRepository = repositoryFactory.VmRepository();
+                vmRepository.StartVm(apiKeyId, vmname);
+
+                return Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }
