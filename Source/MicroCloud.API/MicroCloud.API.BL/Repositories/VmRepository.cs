@@ -86,5 +86,22 @@ namespace MicroCloud.API.BL.Repositories
                 });
             }
         }
+
+        public void SetVmAlias(int apiKeyId, string vmname, string alias)
+        {
+            var vm = GetByName(vmname, apiKeyId);
+
+            if ( vm != null )
+            {
+                using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
+                {
+                    sqlConnection.Execute("EXEC dbo.SetVmAlias @Id, @Alias", new
+                    {
+                        id = vm.Id,
+                        alias
+                    });
+                }
+            }
+        }
     }
 }

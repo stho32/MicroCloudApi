@@ -124,5 +124,28 @@ namespace MicroCloud.API.ClientSide.Controllers
                 return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public JsonResult SetVmAlias(string apiKey, string vmname, string alias)
+        {
+            try
+            {
+                var apiKeyRepository = repositoryFactory.ApiKeyRepository();
+                var apiKeyId = apiKeyRepository.GetApiKeyIdByCode(apiKey);
+                if (apiKeyId <= 0)
+                {
+                    return Json(new { result = "Not a valid api key." }, JsonRequestBehavior.AllowGet);
+                }
+
+                var vmRepository = repositoryFactory.VmRepository();
+                vmRepository.SetVmAlias(apiKeyId, vmname, alias);
+
+                return Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { result = e.ToString() }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }
