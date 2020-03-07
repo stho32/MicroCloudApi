@@ -28,5 +28,13 @@ namespace MicroCloud.API.BL.Entities
         public bool IsActivated { get; set; }
 
         public bool RemoveThisVm { get; set; }
+
+        public string MacAddress { get; set; }
+
+        public bool StopThisVm { get; set; }
+
+        public bool StartThisVm { get; set; }
+
+        public IShortenedPortForwarding[] PortForwardings { get; set; }
     }
 }

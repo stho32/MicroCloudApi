@@ -16,5 +16,10 @@ namespace MicroCloud.API.BL.Interfaces
         bool ActivateThisVm { get; }
         bool IsActivated { get; }
         bool RemoveThisVm { get; }
+        string MacAddress { get; }
+        bool StopThisVm { get; }
+        bool StartThisVm { get; }
+
+        IShortenedPortForwarding[] PortForwardings { get; }
     }
 }

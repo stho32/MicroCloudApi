@@ -11,7 +11,7 @@ namespace MicroCloud.API.BL.Repositories
             this.configurationProvider = configurationProvider;
         }
 
-        public IVmRepository VmRepository() => new VmRepository(configurationProvider);
+        public IVmRepository VmRepository() => new VmRepository(configurationProvider, PortForwardingRepository());
 
         public IPortForwardingRepository PortForwardingRepository() => new PortForwardingRepository(configurationProvider);
 

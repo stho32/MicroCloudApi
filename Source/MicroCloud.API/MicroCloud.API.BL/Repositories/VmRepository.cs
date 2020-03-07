@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
 using MicroCloud.API.BL.Entities;
+using MicroCloud.API.BL.ExtensionMethods;
 using MicroCloud.API.BL.Interfaces;
 
 namespace MicroCloud.API.BL.Repositories
@@ -10,10 +11,12 @@ namespace MicroCloud.API.BL.Repositories
     public class VmRepository : IVmRepository
     {
         private readonly IConfigurationProvider _configurationProvider;
+        private readonly IPortForwardingRepository portForwardingRepository;
 
-        public VmRepository(IConfigurationProvider configurationProvider)
+        public VmRepository(IConfigurationProvider configurationProvider, IPortForwardingRepository portForwardingRepository)
         {
             this._configurationProvider = configurationProvider;
+            this.portForwardingRepository = portForwardingRepository;
         }
 
         public IVm GetByName(string name, int apiKeyId = -1)
@@ -27,10 +30,20 @@ namespace MicroCloud.API.BL.Repositories
                 }).ToList();
 
                 if (vm.Count > 0)
+                {
+                    ExtendWithPortForwardings(vm[0]);
                     return vm[0];
+                }
+                    
 
                 return null;
             }
+        }
+
+        private void ExtendWithPortForwardings(Vm vm)
+        {
+            var portforwardings = portForwardingRepository.GetByVm(vm.Id).ToShortenedPortForwardings();
+            vm.PortForwardings = portforwardings;
         }
 
         public void SetCloudInternalIP(int id, string userHostAddress)
@@ -49,11 +62,16 @@ namespace MicroCloud.API.BL.Repositories
         {
             using (var sqlConnection = new SqlConnection(_configurationProvider.ConnectionString))
             {
-                IEnumerable<Vm> vm = 
+                IEnumerable<Vm> vms = 
                     sqlConnection.Query<Vm>("SELECT * FROM VirtualMachine WHERE ApiKeyId=@id", 
                         new { id = apiKeyId });
 
-                return vm;
+                foreach (var vm in vms)
+                {
+                    ExtendWithPortForwardings(vm);
+                }
+
+                return vms;
             }
         }
 
