@@ -1,4 +1,5 @@
 ﻿using MicroCloud.API.BL.Interfaces;
+using System;
 
 namespace MicroCloud.API.BL.Repositories
 {
@@ -16,6 +17,8 @@ namespace MicroCloud.API.BL.Repositories
         public IPortForwardingRepository PortForwardingRepository() => new PortForwardingRepository(configurationProvider);
 
         public IApiKeyRepository ApiKeyRepository() => new ApiKeyRepository(configurationProvider);
+
+        public IImageRepository ImageRepository() => new ImageRepository(configurationProvider);
     }
 
 }

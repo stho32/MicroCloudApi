@@ -44,15 +44,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Image.cs" />
     <Compile Include="Entities\PortForwarding.cs" />
     <Compile Include="Entities\ShortenedPortForwarding.cs" />
     <Compile Include="ExtensionMethods\PortForwardingExtensionMethods.cs" />
     <Compile Include="Interfaces\IApiKeyRepository.cs" />
     <Compile Include="Interfaces\IConfigurationProvider.cs" />
+    <Compile Include="Interfaces\IImage.cs" />
+    <Compile Include="Interfaces\IImageRepository.cs" />
     <Compile Include="Interfaces\IPortForwarding.cs" />
     <Compile Include="Interfaces\IPortForwardingRepository.cs" />
     <Compile Include="Interfaces\IShortenedPortForwarding.cs" />
     <Compile Include="Repositories\ApiKeyRepository.cs" />
+    <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\PortForwardingRepository.cs" />
     <Compile Include="Repositories\RepositoryFactory.cs" />
     <Compile Include="Repositories\VmRepository.cs" />
